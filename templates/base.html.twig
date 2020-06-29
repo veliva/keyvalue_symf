@@ -4,6 +4,15 @@
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
+        <style>
+            .file-upload-form {
+                display: flex;
+            }
+            .top-div {
+                display: flex;
+                flex-direction: column;
+            }
+        </style>
     </head>
     <body>
         {% block body %}{% endblock %}

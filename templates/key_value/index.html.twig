@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Key Value Main{% endblock %}
+
+{% block body %}
+    <div class="top-div">
+        {{ form(FileUploadForm, { 'attr' : { 'class': 'file-upload-form' } }) }} 
+
+        <div>
+            <form action="/keyvalue/export/csv" style="float: left;">
+                <input type="submit" value="Export to CSV" />
+            </form>
+            <form action="/keyvalue/export/php">
+                <input type="submit" value="Export to PHP" />
+            </form>
+        </div>
+    </div>
+    
+
+    <div class="example-wrapper">
+        <a href="/keyvalue" style="color:black; text-decoration:none;">
+            <h1>Key Value editor ✅</h1>
+        </a>
+    </div>
+
+    {{ form(KeyValueForm) }}
+
+    <hr>
+
+    {% if keyvalues %}
+        <table>
+            <tbody>
+                {% for item in keyvalues %}
+                    <tr>
+                        <td> {{item.key}} </td>
+                        <td>{{item.value}}</td>
+                        <td>
+                            <form action="/keyvalue/edit/{{ item.id }}">
+                                <input type="submit" value="Edit">
+                            </form>
+                        </td>
+                        <td>
+                            <form action="/keyvalue/delete/{{ item.id }}">
+                                <input type="submit" value="Delete">
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No records in database.</p>
+    {% endif %}
+
+{% endblock %}
