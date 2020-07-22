@@ -3,6 +3,6 @@
 {% block title %}Key Value Edit{% endblock %}
 
 {% block body %}
-    <a href="/keyvalue" style="color:black; text-decoration:none;"><button>Go Back</button></a>
+    <a href="{{ path('keyvalue_main') }}" style="color:black; text-decoration:none;"><button>Go Back</button></a>
     {{ form(KeyValueForm) }}
 {% endblock %}

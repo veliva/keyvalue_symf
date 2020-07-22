@@ -7,10 +7,10 @@
         {{ form(FileUploadForm, { 'attr' : { 'class': 'file-upload-form' } }) }} 
 
         <div>
-            <form action="/keyvalue/export/csv" style="float: left;">
+            <form action="{{ path('keyvalue_export', {type: 'csv'}) }}" style="float: left;">
                 <input type="submit" value="Export to CSV" />
             </form>
-            <form action="/keyvalue/export/php">
+            <form action="{{ path('keyvalue_export', {type: 'php'}) }}">
                 <input type="submit" value="Export to PHP" />
             </form>
         </div>
@@ -18,7 +18,7 @@
     
 
     <div class="example-wrapper">
-        <a href="/keyvalue" style="color:black; text-decoration:none;">
+        <a href="{{ path('keyvalue_main') }}" style="color:black; text-decoration:none;">
             <h1>Key Value editor ✅</h1>
         </a>
     </div>
@@ -35,12 +35,12 @@
                         <td> {{item.key}} </td>
                         <td>{{item.value}}</td>
                         <td>
-                            <form action="/keyvalue/edit/{{ item.id }}">
+                            <form action="{{ path('keyvalue_edit', {id: item.id}) }}">
                                 <input type="submit" value="Edit">
                             </form>
                         </td>
                         <td>
-                            <form action="/keyvalue/delete/{{ item.id }}">
+                            <form action="{{ path('keyvalue_delete', {id: item.id}) }}">
                                 <input type="submit" value="Delete">
                             </form>
                         </td>
