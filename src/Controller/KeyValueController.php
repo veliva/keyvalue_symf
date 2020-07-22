@@ -12,7 +12,6 @@ use App\Form\KeyValueType;
 use App\Form\FileSelectionType;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -20,9 +19,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class KeyValueController extends AbstractController {
-    /**
-     * @Route("/keyvalue", name="keyvalue_main")
-     */
+    
     public function index(Request $request, FileUploader $fileUploader, CSVFileToDB $CSVFileToDB) {
         $keyvalues = $this->getDoctrine()
         ->getRepository(KeyValue::class)
@@ -64,9 +61,6 @@ class KeyValueController extends AbstractController {
         ]);
     }
 
-    /**
-     * @Route("/keyvalue/edit/{id}", name="keyvalue_edit")
-     */
     public function edit(Request $request, $id)
     {
         $keyvalue = new KeyValue;
@@ -87,9 +81,6 @@ class KeyValueController extends AbstractController {
         ]);
     }
 
-    /**
-     * @Route("/keyvalue/delete/{id}", name="keyvalue_delete")
-     */
     public function delete($id)
     {
         $entityManager = $this->getDoctrine()->getManager();
@@ -100,9 +91,6 @@ class KeyValueController extends AbstractController {
         return $this->redirectToRoute('keyvalue_main');
     }
 
-    /**
-     * @Route("keyvalue/export/{type}", name="keyvalue_export")
-     */
     public function export($type)
     {
         if($type === 'csv') {

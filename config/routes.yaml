@@ -1,3 +1,19 @@
-index:
-   path: /
+# index:
+#    path: /
+#    controller: App\Controller\KeyValueController::index
+
+keyvalue_main:
+   path: /keyvalue
    controller: App\Controller\KeyValueController::index
+
+keyvalue_edit:
+   path: /keyvalue/edit/{id}
+   controller: App\Controller\KeyValueController::edit
+
+keyvalue_delete:
+   path: /keyvalue/delete/{id}
+   controller: App\Controller\KeyValueController::delete
+
+keyvalue_export:
+   path: /keyvalue/export/{type}
+   controller: App\Controller\KeyValueController::export
