@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Service\FileUploader;
 use App\Service\CSVFileToDB;
+use App\Service\ExportDBToFile;
 
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\KeyValue;
@@ -15,12 +16,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-
 class KeyValueController extends AbstractController {
+
+    private $fileUploader;
+    private $CSVFileToDB;
+    private $ExportDBToFile;
+
+    public function __construct(FileUploader $fileUploader, CSVFileToDB $CSVFileToDB, ExportDBToFile $ExportDBToFile) {
+        $this->fileUploader = $fileUploader;
+        $this->CSVFileToDB = $CSVFileToDB;
+        $this->ExportDBToFile = $ExportDBToFile;
+    }
     
-    public function index(Request $request, FileUploader $fileUploader, CSVFileToDB $CSVFileToDB) {
+    public function index(Request $request) {
         $keyvalues = $this->getDoctrine()
         ->getRepository(KeyValue::class)
         ->findAll();
@@ -44,12 +52,12 @@ class KeyValueController extends AbstractController {
 
         if ($FileSelectionForm->isSubmitted() && $FileSelectionForm->isValid()) {
             $selectedFile = $FileSelectionForm['attachment']->getData();
-            if ($selectedFile && $fileUploader->checkFileType($selectedFile, 'csv')) {
-                $fileUploader->upload($selectedFile, 'csv');
+            if ($selectedFile && $this->fileUploader->checkFileType($selectedFile, 'csv')) {
+                $this->fileUploader->upload($selectedFile, 'csv');
 
-                $CSVFileToDB->setTargetFile('updata.csv');
-                $CSVFileToDB->resetTable('key_value', 'key_value_id_seq');
-                $CSVFileToDB->arrayToDB($CSVFileToDB->csvToArray());
+                $this->CSVFileToDB->setTargetFile('updata.csv');
+                $this->CSVFileToDB->resetTable('key_value', 'key_value_id_seq');
+                $this->CSVFileToDB->arrayToDB($this->CSVFileToDB->csvToArray());
             }
             return $this->redirectToRoute('keyvalue_main');
         }
@@ -93,16 +101,23 @@ class KeyValueController extends AbstractController {
 
     public function export($type)
     {
-        if($type === 'csv') {
-            $test = 1;
-        } elseif ($type === 'php') {
-            $test = 2;
-        }
-        $filePath = $this->getParameter('kernel.project_dir')."/var/uploads/csv/updata.csv";
+        $keyvalues = $this->getDoctrine()
+        ->getRepository(KeyValue::class)
+        ->findAll();
 
-        $response = new BinaryFileResponse($filePath);
-        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
-        $response->headers->set('Content-Type', 'text/csv');
+        $this->ExportDBToFile->setData($keyvalues);
+        
+        if($type === 'csv') {
+            $this->ExportDBToFile->setFileName('data.csv');
+            $this->ExportDBToFile->dataToCSV();
+        } elseif ($type === 'php') {
+            $this->ExportDBToFile->setFileName('data.php');
+            
+        } else {
+            return;
+        }
+
+        $response = $this->ExportDBToFile->download();
 
         return $response;
     }

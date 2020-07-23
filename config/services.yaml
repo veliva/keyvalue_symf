@@ -5,6 +5,7 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     csv_upload_directory: '%env(resolve:CSV_UPLOAD_DIRECTORY)%'
+    download_directory: '%env(resolve:DOWNLOAD_DIRECTORY)%'
 
 services:
     # default configuration for services in *this* file
@@ -33,3 +34,7 @@ services:
     App\Service\CSVFileToDB:
         arguments:
             $targetDirectory: '%csv_upload_directory%'
+
+    App\Service\ExportDBToFile:
+        arguments:
+            $downloadDirectory: '%download_directory%'
