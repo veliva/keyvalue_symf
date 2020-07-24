@@ -112,7 +112,7 @@ class KeyValueController extends AbstractController {
             $this->ExportDBToFile->dataToCSV();
         } elseif ($type === 'php') {
             $this->ExportDBToFile->setFileName('data.php');
-            
+            $this->ExportDBToFile->dataToPHP();
         } else {
             return;
         }

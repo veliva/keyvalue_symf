@@ -3,7 +3,6 @@ namespace App\Service;
 
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-// use Symfony\Component\HttpFoundation\File\Stream;
 
 class ExportDBToFile {
     private $data;
@@ -25,28 +24,40 @@ class ExportDBToFile {
         $this->fileName = $fileName;
     }
 
-    //to csv
     public function dataToCSV()
     {
         $file = fopen($this->downloadDirectory."/".$this->fileName, 'w');
         foreach($this->data as $item) {
             $text = $item->getKey().",".$item->getValue()."\n";
-            echo $text;
             fwrite($file, $text);
         }
         fclose($file);
     }
 
-    //to php
+    public function dataToPHP()
+    {
+        $file = fopen($this->downloadDirectory."/".$this->fileName, 'w');
+        fwrite($file, "<?php"."\n");
+        fwrite($file, "return ["."\n");
+        
+        foreach($this->data as $item) {
+            $text = "'".$item->getKey()."'"."=>"."'".$item->getValue()."'".",\n";
+            fwrite($file, $text);
+        }
 
-    //download
+        fwrite($file, "];"."\n");
+        fwrite($file, "?>"."\n");
+
+        fclose($file);
+    }
+
     public function download()
     {
         $file = $this->downloadDirectory."/".$this->fileName;
-        // $stream  = new Stream($this->downloadDirectory."/".$this->fileName);
         $response = new BinaryFileResponse($file);
         $response->headers->set('Content-Type', 'application/octet-stream');
         $response->headers->set('Content-Length', filesize($file));
+        $response->headers->set('Cache-Control', 'private');
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
 
         return $response;
