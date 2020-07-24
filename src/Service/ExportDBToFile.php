@@ -42,9 +42,11 @@ class ExportDBToFile {
     //download
     public function download()
     {
+        $file = $this->downloadDirectory."/".$this->fileName;
         // $stream  = new Stream($this->downloadDirectory."/".$this->fileName);
-        $response = new BinaryFileResponse($this->downloadDirectory."/".$this->fileName);
+        $response = new BinaryFileResponse($file);
         $response->headers->set('Content-Type', 'application/octet-stream');
+        $response->headers->set('Content-Length', filesize($file));
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
 
         return $response;
